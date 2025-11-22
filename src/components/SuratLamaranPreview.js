@@ -335,7 +335,7 @@ const SuratLamaranPreview = ({ data, onTtdSettingChange }) => {
                           className="max-h-16 max-w-[150px] object-contain mx-auto"
                           style={{ 
                             ...ttdBaseStyle,
-                            filter: 'none', 
+                            filter: 'grayscale(100%) contrast(1000%)',
                             cursor: 'default',
                           }}
                         />
