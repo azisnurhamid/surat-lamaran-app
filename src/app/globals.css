@@ -9,28 +9,28 @@ html, body {
 @layer components {
   .surat-container {
     max-width: 21cm;
-    height: 29.7cm;
     aspect-ratio: 1 / 1.414;
-    margin: 1cm auto;
-    padding: 2cm;
+    margin: 0 auto;
+    padding: 1cm;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     background-color: white;
     color: black;
     font-size: 11pt;
     line-height: 1.5;
-    overflow: hidden;
   }
 }
 
 @media print {
+  @page {
+    margin: 0;
+    size: A4;
+  }
   body {
     print-color-adjust: exact;
     -webkit-print-color-adjust: exact;
   }
   .surat-container {
     box-shadow: none;
-    margin: 0 !important; /* Pastikan margin browser default yang menangani area putih di luar A4 */
-    padding: 0 !important; /* FIX: Hapus padding agar TTD bisa bergerak bebas ke tepi */
     height: auto;
     aspect-ratio: auto;
     overflow: visible !important;

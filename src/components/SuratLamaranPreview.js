@@ -286,16 +286,18 @@ const SuratLamaranPreview = ({ data, onTtdSettingChange }) => {
             </ul>
           </div>
 
-          <div className="mt-8">
+          <div className="mt-4">
             <p dangerouslySetInnerHTML={{ __html: penutupSurat }} />
           </div>
 
-          <div className="mt-12 flex justify-end"> 
-            <div className="w-[200px] text-right relative">
-                
-                <p className="inline-block min-w-[150px] text-center">{dataConfig.surat.hormatSaya}</p> 
+          {/* Bagian Tanda Tangan */}
+          <div className="mt-8 flex justify-end"> {/* Menggeser seluruh blok ke kanan */}
+            <div className="w-[200px] text-center relative"> {/* Kontainer dengan lebar tetap, elemen di dalamnya rata tengah */}
+                <div className="h-6"></div> {/* Garis kosong di atas "Hormat saya," */}
+                <p className="inline-block">{dataConfig.surat.hormatSaya}</p> 
+                <div className="h-4"></div> {/* Garis kosong di bawah "Hormat saya," */}
 
-                <div ref={ttdRef} className="mt-4 h-16 relative print:hidden w-[150px] ml-auto" style={{ overflow: 'visible' }}> 
+                <div ref={ttdRef} className="h-16 relative print:hidden w-[150px] mx-auto" style={{ overflow: 'visible' }}> 
                   {tandaTangan && (
                     <>
                       <img 
@@ -327,7 +329,7 @@ const SuratLamaranPreview = ({ data, onTtdSettingChange }) => {
                   )}
                 </div>
                 
-                <div className="hidden print:block mt-4 relative w-[150px] ml-auto" style={{ overflow: 'visible', minHeight: '64px' }}>
+                <div className="hidden print:block relative w-[150px] mx-auto" style={{ overflow: 'visible', minHeight: '64px' }}>
                     {tandaTangan && (
                         <img 
                           src={tandaTangan} 
@@ -343,7 +345,7 @@ const SuratLamaranPreview = ({ data, onTtdSettingChange }) => {
                 </div>
                 
                 <div className="mt-[-4]">
-                  <p className="border-b border-black inline-block min-w-[150px] text-center"><strong>{nama}</strong></p>
+                  <p className="border-b border-black inline-block px-10"><strong>{nama}</strong></p> {/* Tambah padding horizontal agar garis lebih panjang */}
                 </div>
             </div>
           </div>
