@@ -22,7 +22,7 @@ const initialData = {
   pendidikan: 'SMK Bina Teknologi Purwokerto',
   jurusan: 'Teknik Komputer dan Jaringan',
   pengalaman: '3 Tahun sebagai Spesialis Pemasaran Digital dan Mengelola Website Perusahaan',
-  lampiran: 'Surat Lamaran Pekerjaan\nCurriculum Vitae\nScan Kartu Tanda Penduduk (KTP)\nScan Ijazah Terakhir (SMK)\nPas Foto',
+  lampiran: 'Curriculum Vitae\nScan Kartu Tanda Penduduk (KTP)\nScan Ijazah Terakhir\nPas Foto',
   tandaTangan: null,
   ttdScale: 1.0, 
   ttdRotation: 0,

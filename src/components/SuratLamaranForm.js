@@ -43,8 +43,7 @@ const SuratLamaranForm = ({ onDataChange, initialData }) => {
     'posisiDilamar',
     'pendidikan',
     'jurusan',
-    'pengalaman',
-    'lampiran'
+    'pengalaman'
   ];
 
   const mandatoryFieldsByStep = {
@@ -158,6 +157,28 @@ const SuratLamaranForm = ({ onDataChange, initialData }) => {
         newData[name] = finalValue;
     }
     
+    setData(newData);
+    onDataChange(newData);
+  };
+  
+  const handleLampiranChange = (e) => {
+    const { value, checked } = e.target;
+    
+    const currentLampiranSet = new Set(data.lampiran.split('\n').map(item => item.trim()).filter(item => item !== ''));
+
+    if (checked) {
+      currentLampiranSet.add(value);
+    } else {
+      currentLampiranSet.delete(value);
+    }
+    
+    const sortedLampiranArray = dataConfig.labels.lampiranOptions.filter(option => 
+      currentLampiranSet.has(option)
+    );
+    
+    const newLampiranString = sortedLampiranArray.join('\n');
+    
+    const newData = { ...data, lampiran: newLampiranString };
     setData(newData);
     onDataChange(newData);
   };
@@ -302,6 +323,7 @@ const SuratLamaranForm = ({ onDataChange, initialData }) => {
         return (
           <>
             <h3 className="text-lg font-semibold mt-4 mb-2 text-gray-800 border-b pb-1">{dataConfig.form.steps.step3}</h3>
+            
             <label htmlFor="posisiDilamar" className={labelClass}>{dataConfig.labels.posisiDilamar}</label>
             <input type="text" id="posisiDilamar" name="posisiDilamar" value={data.posisiDilamar} onChange={handleChange} className={inputClass} onBlur={handleBlur} />
 
@@ -332,10 +354,7 @@ const SuratLamaranForm = ({ onDataChange, initialData }) => {
                     onBlur={handleBlur}
                 />
             )}
-
-            <label htmlFor="sumberInfo" className={labelClass}>{dataConfig.labels.sumberInfo}</label>
-            <input type="text" id="sumberInfo" name="sumberInfo" value={data.sumberInfo} onChange={handleChange} className={inputClass} onBlur={handleBlur} />
-
+            
             <label htmlFor="pendidikan" className={labelClass}>{dataConfig.labels.pendidikan}</label>
             <input type="text" id="pendidikan" name="pendidikan" value={data.pendidikan} onChange={handleChange} className={inputClass} onBlur={handleBlur} />
 
@@ -344,9 +363,29 @@ const SuratLamaranForm = ({ onDataChange, initialData }) => {
 
             <label htmlFor="pengalaman" className={labelClass}>{dataConfig.labels.pengalaman}</label>
             <textarea id="pengalaman" name="pengalaman" value={data.pengalaman} onChange={handleChange} className={`${inputClass} h-24`} onBlur={handleBlur}></textarea>
+            
+            <label htmlFor="sumberInfo" className={labelClass}>{dataConfig.labels.sumberInfo}</label>
+            <input type="text" id="sumberInfo" name="sumberInfo" value={data.sumberInfo} onChange={handleChange} className={inputClass} onBlur={handleBlur} />
 
-            <label htmlFor="lampiran" className={labelClass}>{dataConfig.labels.lampiran}</label>
-            <textarea id="lampiran" name="lampiran" value={data.lampiran} onChange={handleChange} className={`${inputClass} h-32`} placeholder={dataConfig.labels.placeholderLampiran} onBlur={handleBlur}></textarea>
+            <label className={labelClass}>{dataConfig.labels.lampiran}</label>
+            <div className="mt-2 space-y-2 p-3 border border-gray-300 rounded-md bg-gray-50">
+                {dataConfig.labels.lampiranOptions.map((option, index) => (
+                    <div key={index} className="flex items-center">
+                        <input 
+                            type="checkbox" 
+                            id={`lampiran-${index}`} 
+                            name="lampiran" 
+                            value={option}
+                            checked={data.lampiran.split('\n').some(item => item.trim() === option)}
+                            onChange={handleLampiranChange} 
+                            className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                        />
+                        <label htmlFor={`lampiran-${index}`} className="ml-3 text-sm font-medium text-gray-700 cursor-pointer">
+                            {option}
+                        </label>
+                    </div>
+                ))}
+            </div>
 
             <label htmlFor="tandaTangan" className={labelClass}>{dataConfig.labels.tandaTangan}</label>
             <input 
