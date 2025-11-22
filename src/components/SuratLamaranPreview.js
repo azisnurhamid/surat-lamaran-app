@@ -296,11 +296,11 @@ const SuratLamaranPreview = ({ data, onTtdSettingChange }) => {
             <p dangerouslySetInnerHTML={{ __html: penutupSurat }} />
           </div>
 
-          <div className="mt-4 flex justify-end" style={{ breakInside: 'avoid' }}> 
+          <div className="mt-0 flex justify-end" style={{ breakInside: 'avoid' }}> 
             <div className="w-fit text-center relative"> 
                 <p className="text-center">{dataConfig.surat.hormatSaya}</p> 
 
-                <div ref={ttdRef} className="mt-1 h-16 relative print:hidden inline-block" style={{ overflow: 'visible' }}> 
+                <div ref={ttdRef} className="h-16 relative print:hidden inline-block" style={{ overflow: 'visible' }}> 
                   {tandaTangan && (
                     <>
                       <img 
@@ -332,7 +332,7 @@ const SuratLamaranPreview = ({ data, onTtdSettingChange }) => {
                   )}
                 </div>
                 
-                <div className="hidden print:block mt-1 relative inline-block" style={{ overflow: 'visible', minHeight: '64px' }}>
+                <div className="hidden print:block relative inline-block" style={{ overflow: 'visible', minHeight: '64px' }}>
                     {tandaTangan && (
                         <img 
                           src={tandaTangan} 
