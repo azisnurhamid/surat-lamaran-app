@@ -35,6 +35,12 @@ const TtdSlider = ({ name, label, icon, min, max, step, value, onChange }) => (
 );
 
 const TtdSettingsOverlay = ({ data, onRangeChange, setTtdActive }) => {
+  const customStyles = {
+      ttdScale: constants.icons.ttdScaleIcon,
+      ttdRotation: constants.icons.ttdRotationIcon,
+      ttdOffsetX: constants.icons.ttdOffsetXIcon,
+      ttdOffsetY: constants.icons.ttdOffsetYIcon
+  };
   const { ttdScale, ttdRotation, ttdOffsetX, ttdOffsetY } = data;
   
   return (
@@ -53,7 +59,7 @@ const TtdSettingsOverlay = ({ data, onRangeChange, setTtdActive }) => {
         <div className="grid grid-cols-2 gap-2">
             <TtdSlider 
                 name="ttdScale" 
-                icon={constants.icons.ttdScaleIcon}
+                icon={customStyles.ttdScale}
                 label={dataConfig.labels.ttdScale} 
                 min="0.5" 
                 max="2.0" 
@@ -63,7 +69,7 @@ const TtdSettingsOverlay = ({ data, onRangeChange, setTtdActive }) => {
             />
             <TtdSlider 
                 name="ttdRotation" 
-                icon={constants.icons.ttdRotationIcon}
+                icon={customStyles.ttdRotation}
                 label={dataConfig.labels.ttdRotation} 
                 min="-45" 
                 max="45" 
@@ -76,7 +82,7 @@ const TtdSettingsOverlay = ({ data, onRangeChange, setTtdActive }) => {
         <div className="grid grid-cols-2 gap-2">
              <TtdSlider 
                 name="ttdOffsetX" 
-                icon={constants.icons.ttdOffsetXIcon}
+                icon={customStyles.ttdOffsetX}
                 label={dataConfig.labels.ttdOffsetX} 
                 min="-100" 
                 max="100" 
@@ -86,7 +92,7 @@ const TtdSettingsOverlay = ({ data, onRangeChange, setTtdActive }) => {
             />
             <TtdSlider 
                 name="ttdOffsetY" 
-                icon={constants.icons.ttdOffsetYIcon}
+                icon={customStyles.ttdOffsetY}
                 label={dataConfig.labels.ttdOffsetY} 
                 min="-100" 
                 max="100" 
@@ -290,14 +296,11 @@ const SuratLamaranPreview = ({ data, onTtdSettingChange }) => {
             <p dangerouslySetInnerHTML={{ __html: penutupSurat }} />
           </div>
 
-          {/* Bagian Tanda Tangan */}
-          <div className="mt-8 flex justify-end"> {/* Menggeser seluruh blok ke kanan */}
-            <div className="w-[200px] text-center relative"> {/* Kontainer dengan lebar tetap, elemen di dalamnya rata tengah */}
-                <div className="h-6"></div> {/* Garis kosong di atas "Hormat saya," */}
-                <p className="inline-block">{dataConfig.surat.hormatSaya}</p> 
-                <div className="h-4"></div> {/* Garis kosong di bawah "Hormat saya," */}
+          <div className="mt-8 flex justify-end" style={{ breakInside: 'avoid' }}> 
+            <div className="w-fit text-center relative"> 
+                <p className="text-center">{dataConfig.surat.hormatSaya}</p> 
 
-                <div ref={ttdRef} className="h-16 relative print:hidden w-[150px] mx-auto" style={{ overflow: 'visible' }}> 
+                <div ref={ttdRef} className="mt-1 h-16 relative print:hidden inline-block" style={{ overflow: 'visible' }}> 
                   {tandaTangan && (
                     <>
                       <img 
@@ -308,7 +311,7 @@ const SuratLamaranPreview = ({ data, onTtdSettingChange }) => {
                           ...ttdBaseStyle,
                           filter: 'grayscale(100%) brightness(0) invert(0)', 
                           transition: 'transform 0.1s ease-out',
-                          cursor: ttdActive ? 'grabbing' : 'grab',
+                          cursor: 'grab',
                         }} 
                         onPointerDown={handleDragStart} 
                         draggable="false"
@@ -329,7 +332,7 @@ const SuratLamaranPreview = ({ data, onTtdSettingChange }) => {
                   )}
                 </div>
                 
-                <div className="hidden print:block relative w-[150px] mx-auto" style={{ overflow: 'visible', minHeight: '64px' }}>
+                <div className="hidden print:block mt-1 relative inline-block" style={{ overflow: 'visible', minHeight: '64px' }}>
                     {tandaTangan && (
                         <img 
                           src={tandaTangan} 
@@ -344,8 +347,8 @@ const SuratLamaranPreview = ({ data, onTtdSettingChange }) => {
                     )}
                 </div>
                 
-                <div className="mt-[-4]">
-                  <p className="border-b border-black inline-block px-10"><strong>{nama}</strong></p> {/* Tambah padding horizontal agar garis lebih panjang */}
+                <div className="mt-[-4] flex justify-center">
+                  <p className="border-b border-black inline-block"><strong>{nama}</strong></p> 
                 </div>
             </div>
           </div>
