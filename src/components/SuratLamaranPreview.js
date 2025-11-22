@@ -12,6 +12,7 @@ const replaceTemplate = (template, data) => {
             result = result.replace(regex, data[key]);
         }
     }
+    result = result.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
     return result;
 };
 
@@ -271,9 +272,7 @@ const SuratLamaranPreview = ({ data, onTtdSettingChange }) => {
           </table>
 
           <div className="mt-6">
-            <p>
-              {paragrafIsi1}
-            </p>
+            <p dangerouslySetInnerHTML={{ __html: paragrafIsi1 }} />
             <p className="mt-4">
               {dataConfig.surat.paragrafIsi2}
             </p>
@@ -288,9 +287,7 @@ const SuratLamaranPreview = ({ data, onTtdSettingChange }) => {
           </div>
 
           <div className="mt-8">
-            <p>
-              {penutupSurat}
-            </p>
+            <p dangerouslySetInnerHTML={{ __html: penutupSurat }} />
           </div>
 
           <div className="mt-12 flex justify-end"> 
