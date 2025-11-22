@@ -1,0 +1,15 @@
+{
+  "icons": {
+    "formTitleIcon": "🛠️",
+    "buttonNextIcon": "➡️",
+    "buttonPrevIcon": "⬅️",
+    "buttonPrintIcon": "📄",
+    "ttdScaleIcon": "🔍",
+    "ttdRotationIcon": "🔄",
+    "ttdOffsetXIcon": "↔️",
+    "ttdOffsetYIcon": "↕️"
+  },
+  "urls": {
+    "ttdFileType": ".png"
+  }
+}
