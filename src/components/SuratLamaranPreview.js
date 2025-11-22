@@ -296,7 +296,7 @@ const SuratLamaranPreview = ({ data, onTtdSettingChange }) => {
             <p dangerouslySetInnerHTML={{ __html: penutupSurat }} />
           </div>
 
-          <div className="mt-8 flex justify-end" style={{ breakInside: 'avoid' }}> 
+          <div className="mt-4 flex justify-end" style={{ breakInside: 'avoid' }}> 
             <div className="w-fit text-center relative"> 
                 <p className="text-center">{dataConfig.surat.hormatSaya}</p> 
 
