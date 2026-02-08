@@ -1,15 +1,14 @@
 import './globals.css';
-import dataConfig from '../data/dataConfig.json';
 
 export const metadata = {
-  title: dataConfig.metadata.title,
-  description: dataConfig.metadata.description,
+  title: 'Generator Surat Lamaran',
+  description: 'Buat surat lamaran kerja profesional dengan mudah',
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="id">
-      <body className="bg-gray-100 print:bg-white">{children}</body>
+      <body>{children}</body>
     </html>
   );
 }

@@ -1,87 +1,60 @@
 {
-  "metadata": {
-    "title": "Pembuat Surat Lamaran Kerja",
-    "description": "Aplikasi web untuk membuat surat lamaran kerja dengan mudah"
-  },
-  "form": {
-    "title": "Input Data Surat",
-    "step": "Langkah",
-    "steps": {
-      "step1": "Tujuan & Tanggal",
-      "step2": "Data Diri Pelamar",
-      "step3": "Detail Lamaran"
-    },
-    "buttonNext": "Lanjut",
-    "buttonPrev": "Kembali",
-    "buttonPrint": "Cetak Surat Lamaran"
-  },
+  "steps": ["Informasi Dasar", "Data Pribadi", "Detail Lamaran", "Lampiran & TTD"],
   "labels": {
     "kotaPembuatan": "Kota Pembuatan",
-    "kotaOptions": [
-      "Jakarta",
-      "Purwokerto",
-      "Cilacap",
-      "Purbalingga",
-      "Banjarnegara",
-      "Lainnya"
-    ],
-    "tanggalPembuatan": "Tanggal Pembuatan",
-    "tujuanPerusahaan": "Tujuan Perusahaan",
-    "tujuanAlamat": "Alamat Tujuan",
+    "tanggalPembuatan": "Tanggal",
+    "tujuanJabatan": "Jabatan Tujuan",
+    "tujuanPerusahaan": "Nama Perusahaan",
+    "tujuanAlamat": "Alamat Perusahaan",
     "perihal": "Perihal",
     "nama": "Nama Lengkap",
     "alamat": "Alamat Lengkap",
     "email": "Email",
-    "noHp": "No. HP/WhatsApp",
-    "website": "Website/CV Online",
-    "posisiDilamar": "Posisi Dilamar",
-    "wilayah": "Wilayah Penempatan",
-    "sumberInfo": "Sumber Informasi Lowongan",
+    "noHp": "No. HP / WA",
+    "website": "Portofolio / Website (Opsional)",
+    "posisiDilamar": "Posisi yang Dilamar",
+    "sumberInfo": "Sumber Informasi",
     "pendidikan": "Pendidikan Terakhir",
     "jurusan": "Jurusan",
-    "pengalaman": "Pengalaman Kerja (Ringkas)",
-    "lampiran": "Daftar Lampiran",
-    "lampiranOptions": [
-      "Curriculum Vitae",
-      "Scan Kartu Tanda Penduduk (KTP)",
-      "Scan Kartu Keluarga (KK)",
-      "Scan Ijazah Terakhir",
-      "Scan Transkip Nilai",
-      "Scan SKCK",
-      "Pas Foto",
-      "Sertifikat pendukung"
-    ],
-    "placeholderLampiran": "Masukkan setiap item dalam baris baru (Enter)",
-    "tandaTangan": "Upload Tanda Tangan (PNG)",
-    "ttdSettings": "Pengaturan Tanda Tangan",
-    "ttdScale": "Ukuran TTD",
-    "ttdRotation": "Kemiringan TTD (derajat)",
-    "ttdOffsetX": "Posisi Horizontal (X)",
-    "ttdOffsetY": "Posisi Vertikal (Y)",
-    "otherOption": "Lainnya",
-    "otherKotaPlaceholder": "Masukkan nama kota...",
-    "otherWilayahPlaceholder": "Masukkan wilayah penempatan...",
-    "ttdAlertPNG": "Hanya file format PNG yang diizinkan untuk Tanda Tangan.",
-    "ttdSuccess": "Tanda Tangan berhasil diunggah.",
-    "ttdDeleteButton": "[x] Hapus",
-    "ttdDragHelp": "Gunakan mouse/sentuh pada gambar tanda tangan di bawah untuk menggesernya secara langsung.",
-    "ttdPositionHelp": "Posisi (Geser Langsung pada Gambar)",
-    "ttdAltText": "Tanda Tangan"
+    "pengalaman": "Ringkasan Pengalaman",
+    "metodeLamaran": "Metode Lamaran",
+    "lampiran": "Dokumen Lampiran",
+    "uploadTtd": "Unggah Tanda tangan (PNG/JPG)",
+    "ttdNote": "Gunakan gambar transparan untuk hasil terbaik.",
+    "requiredMark": "*",
+    "otherOption": "Lainnya (Ketik Manual)",
+    "placeholderJabatan": "Ketik jabatan tujuan...",
+    "select": "Pilih"
   },
-  "surat": {
-    "kepadaYth": "Kepada Yth.",
-    "bpkIbuHrd": "Bpk/Ibu HRD",
-    "denganHormat": "Dengan hormat,",
-    "pembuka": "Saya yang bertanda tangan di bawah ini:",
-    "labelNama": "Nama",
-    "labelAlamat": "Alamat",
-    "labelEmail": "Email",
-    "labelNoHp": "No. HP/WhatsApp",
-    "labelWebsite": "Website",
-    "paragrafIsi1Template": "Berdasarkan informasi lowongan kerja untuk posisi **{posisiDilamar}** di wilayah **{wilayah}**, saya adalah lulusan **{pendidikan}** jurusan **{jurusan}** dengan pengalaman kerja **{pengalaman}**. Informasi lowongan tersebut saya peroleh dari **{sumberInfo}**.",
-    "paragrafIsi2": "Dengan kemampuan dan pengalaman yang saya miliki, saya yakin dapat memberikan kontribusi positif bagi perusahaan, serta memiliki semangat kerja yang disiplin dan mudah beradaptasi.",
-    "paragrafLampiran": "Sebagai bahan pertimbangan, bersama surat ini saya lampirkan:",
-    "penutupSuratTemplate": "Demikian surat lamaran ini saya buat dengan sebenar-benarnya. Besar harapan saya untuk dapat diberikan kesempatan mengikuti proses seleksi dan bergabung sebagai bagian dari tim **{tujuanPerusahaan}**. Atas perhatian dan kesempatan yang Bapak/Ibu berikan, saya ucapkan terima kasih.",
-    "hormatSaya": "Hormat saya,"
+  "options": {
+    "tujuanJabatan": ["HRD Manager", "Pimpinan Cabang", "Kepala Personalia", "Lainnya (Ketik Manual)"],
+    "sumberInfo": ["LinkedIn", "Instagram", "Website Perusahaan", "Portal Kerja", "Teman/Keluarga"],
+    "pendidikan": ["SMA/SMK", "D3", "S1", "S2"],
+    "metodeLamaran": ["Online Scan", "Offline Fotocopy"],
+    "lampiranBaseOptions": [
+      "Daftar Riwayat Hidup (CV)",
+      "Ijazah Terakhir",
+      "Transkrip Nilai",
+      "KTP",
+      "Pas Foto Terbaru",
+      "Sertifikat Pendukung"
+    ]
+  },
+  "messages": {
+    "emailError": "Format email tidak valid",
+    "noHpError": "Format No HP tidak valid (08xxx)",
+    "websiteError": "Format URL tidak valid"
+  },
+  "navigation": {
+    "prev": "Sebelumnya",
+    "next": "Selanjutnya",
+    "finish": "Cetak Surat"
+  },
+  "template": {
+    "salamPembuka": "Dengan hormat,",
+    "pembuka": "Berdasarkan informasi yang saya dapatkan dari {sumberInfo}, saya bermaksud mengajukan lamaran pekerjaan untuk posisi {posisiDilamar} di perusahaan yang Bapak/Ibu pimpin.",
+    "penutupLampiran": "Sebagai bahan pertimbangan, saya melampirkan beberapa dokumen sebagai berikut:",
+    "penutupHarapan": "Besar harapan saya untuk dapat diberikan kesempatan wawancara guna menjelaskan lebih mendalam mengenai potensi saya. Demikian surat lamaran ini saya sampaikan.",
+    "salamPenutup": "Atas perhatian Bapak/Ibu, saya ucapkan terima kasih."
   }
 }

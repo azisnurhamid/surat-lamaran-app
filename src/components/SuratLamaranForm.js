@@ -4,483 +4,214 @@ import { useState } from 'react';
 import dataConfig from '../data/dataConfig.json';
 import constants from '../data/constants.json';
 
-const SuratLamaranForm = ({ onDataChange, initialData }) => {
-  const initialKotaOptions = dataConfig.labels.kotaOptions.slice(0, -1);
-  const [data, setData] = useState(initialData);
-  const [currentStep, setCurrentStep] = useState(1);
-  const [isOtherCitySelected, setIsOtherCitySelected] = useState(
-    !initialKotaOptions.includes(initialData.kotaPembuatan)
+const InputField = ({ label, name, value, onChange, onBlur, type = "text", required = false, placeholder = "", error = "" }) => (
+  <div className="flex flex-col gap-1">
+    <label htmlFor={name} className="text-sm font-semibold text-gray-700">
+      {label} {required && <span className="text-red-500 ml-1">{dataConfig.labels.requiredMark}</span>}
+    </label>
+    <input
+      type={type}
+      id={name}
+      name={name}
+      value={value}
+      onChange={onChange}
+      onBlur={onBlur}
+      placeholder={placeholder}
+      className={`border rounded-md p-2 text-sm focus:ring-2 outline-none transition ${error ? 'border-red-500 focus:ring-red-200' : 'border-gray-300 focus:ring-blue-500'}`}
+      required={required}
+    />
+    {error && <span className="text-[10px] text-red-500 font-medium">{error}</span>}
+  </div>
+);
+
+const TextAreaField = ({ label, name, value, onChange, onBlur, rows = 3, required = false, placeholder = "" }) => (
+  <div className="flex flex-col gap-1">
+    <label htmlFor={name} className="text-sm font-semibold text-gray-700">
+      {label} {required && <span className="text-red-500 ml-1">{dataConfig.labels.requiredMark}</span>}
+    </label>
+    <textarea
+      id={name}
+      name={name}
+      value={value}
+      onChange={onChange}
+      onBlur={onBlur}
+      rows={rows}
+      placeholder={placeholder}
+      className="border border-gray-300 rounded-md p-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition resize-y"
+      required={required}
+    />
+  </div>
+);
+
+const SelectField = ({ label, name, value, onChange, options, required = false }) => (
+  <div className="flex flex-col gap-1">
+    <label htmlFor={name} className="text-sm font-semibold text-gray-700">
+      {label} {required && <span className="text-red-500 ml-1">{dataConfig.labels.requiredMark}</span>}
+    </label>
+    <select
+      id={name}
+      name={name}
+      value={value}
+      onChange={onChange}
+      className="border border-gray-300 rounded-md p-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition bg-white"
+      required={required}
+    >
+      <option value="" disabled>-- {dataConfig.labels.select} {label} --</option>
+      {options.map((option, index) => (
+        <option key={index} value={option}>{option}</option>
+      ))}
+    </select>
+  </div>
+);
+
+const CheckboxGroup = ({ label, selectedOptions, options, prefix, onChange }) => {
+  const handleToggle = (optionBase) => {
+    const fullOption = `${prefix} ${optionBase}`;
+    let newSelection = selectedOptions.includes(fullOption)
+      ? selectedOptions.filter((item) => item !== fullOption)
+      : [...selectedOptions, fullOption];
+    onChange({ target: { name: 'lampiran', value: newSelection } });
+  };
+  return (
+    <div className="flex flex-col gap-2">
+      <label className="text-sm font-semibold text-gray-700">
+        {label} <span className="text-red-500 ml-1">{dataConfig.labels.requiredMark}</span>
+      </label>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 border border-gray-200 p-3 rounded-md bg-gray-50 max-h-60 overflow-y-auto">
+        {options.map((option, index) => {
+          const isChecked = selectedOptions.some(item => item.endsWith(option));
+          return (
+            <label key={index} className="flex items-center space-x-2 cursor-pointer hover:bg-gray-100 p-1 rounded">
+              <input type="checkbox" checked={isChecked} onChange={() => handleToggle(option)} className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500" />
+              <span className="text-sm text-gray-700">{prefix} {option}</span>
+            </label>
+          );
+        })}
+      </div>
+    </div>
   );
-  const [isOtherWilayahSelected, setIsOtherWilayahSelected] = useState(
-    !initialKotaOptions.includes(initialData.wilayah)
-  );
+};
 
-  const mandatoryFields = [
-    'kotaPembuatan',
-    'tanggalPembuatan',
-    'tujuanPerusahaan',
-    'tujuanAlamat',
-    'perihal',
-    'nama',
-    'alamat',
-    'email',
-    'noHp',
-    'posisiDilamar',
-    'wilayah',
-    'sumberInfo',
-    'pendidikan',
-    'jurusan',
-    'pengalaman',
-    'lampiran'
-  ];
+const SuratLamaranForm = ({ data, handleChange, handleBlur, handleFileChange }) => {
+  const [activeStep, setActiveStep] = useState(0);
+  const [showOtherJabatan, setShowOtherJabatan] = useState(false);
+  const steps = dataConfig.steps;
 
-  const capitalizedFields = [
-    'tujuanPerusahaan',
-    'tujuanAlamat',
-    'perihal',
-    'nama',
-    'alamat',
-    'posisiDilamar',
-    'pendidikan',
-    'jurusan',
-    'pengalaman'
-  ];
+  const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const validateNoHp = (no) => /^08[0-9]{8,11}$/.test(no);
+  const validateWebsite = (web) => { if (!web) return true; return /^(https?:\/\/)?([\w\d-]+\.)+[\w\d]{2,}(\/.*)?$/.test(web); };
 
-  const mandatoryFieldsByStep = {
-    1: ['kotaPembuatan', 'tanggalPembuatan', 'tujuanPerusahaan', 'tujuanAlamat', 'perihal'],
-    2: ['nama', 'alamat', 'email', 'noHp'],
+  const validateStep = (step) => {
+    switch (step) {
+      case 0: return data.kotaPembuatan?.trim() && data.tanggalPembuatan?.trim() && data.tujuanPerusahaan?.trim() && data.tujuanAlamat?.trim() && data.perihal?.trim() && data.tujuanJabatan?.trim();
+      case 1: return data.nama?.trim() && data.alamat?.trim() && validateEmail(data.email) && validateNoHp(data.noHp) && validateWebsite(data.website);
+      case 2: return data.posisiDilamar?.trim() && data.sumberInfo?.trim() && data.pendidikan?.trim() && data.jurusan?.trim() && data.pengalaman?.trim();
+      case 3: return data.lampiran && data.lampiran.length > 0;
+      default: return true;
+    }
   };
 
-  const isFormValid = (currentData) => {
-      for (const field of mandatoryFields) {
-          if (!currentData[field] || String(currentData[field]).trim() === '') {
-              return false;
-          }
-      }
-      return true;
-  };
+  const handleNext = () => { if (validateStep(activeStep)) setActiveStep(prev => prev + 1); };
+  const handlePrev = () => { if (activeStep > 0) setActiveStep(prev => prev - 1); };
+  const handlePrint = () => { window.print(); };
 
-  const isStepValid = (step, currentData) => {
-      const fields = mandatoryFieldsByStep[step];
-      if (!fields) return true; 
-
-      for (const field of fields) {
-          if (!currentData[field] || String(currentData[field]).trim() === '') {
-              return false;
-          }
+  const handleMetodeChange = (e) => {
+    const newMetode = e.target.value;
+    const oldPrefix = data.metodeLamaran === "Online Scan" ? "Scan" : "Fotocopy";
+    const newPrefix = newMetode === "Online Scan" ? "Scan" : "Fotocopy";
+    
+    const updatedLampiran = data.lampiran.map(item => {
+      if (typeof item === 'string' && item.startsWith(oldPrefix)) {
+        return item.replace(oldPrefix, newPrefix);
       }
-      return true;
-  };
-
-  const toTitleCase = (str) => {
-    let processedStr = str.replace(/(pt|cv)\s*\./gi, '$1'); 
-
-    return processedStr.replace(/\w\S*/g, (txt) => {
-      if (txt.toLowerCase() === 'pt') {
-        return 'PT';
-      }
-      if (txt.toLowerCase() === 'cv') {
-        return 'CV';
-      }
-      if (txt.toLowerCase() === 'rt') {
-        return 'RT';
-      }
-      if (txt.toLowerCase() === 'rw') {
-        return 'RW';
-      }
-      if (txt.toLowerCase() === 'sd') {
-        return 'SD';
-      }
-      if (txt.toLowerCase() === 'smp') {
-        return 'SMP';
-      }
-      if (txt.toLowerCase() === 'sma') {
-        return 'SMA';
-      }
-      if (txt.toLowerCase() === 'smk') {
-        return 'SMK';
-      }
-      if (txt.toLowerCase() === 'dll') {
-        return 'dll';
-      }
-      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+      return `${newPrefix} ${item}`;
     });
+
+    handleChange(e);
+    handleChange({ target: { name: 'lampiran', value: updatedLampiran } });
   };
 
-  const sanitizeValue = (value) => {
-    if (typeof value !== 'string') return value;
-
-    if (value.startsWith(' ')) {
-        value = value.trimStart();
-    }
-    
-    value = value.replace(/\s{2,}/g, ' ');
-    
-    return value;
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    
-    let sanitizedValue = sanitizeValue(value);
-    let finalValue = sanitizedValue;
-
-    if (capitalizedFields.includes(name)) {
-        finalValue = toTitleCase(sanitizedValue);
-    }
-    
-    const newData = { ...data };
-
-    if (name === 'kotaPembuatan') {
-        if (value === dataConfig.labels.otherOption) {
-            setIsOtherCitySelected(true);
-            newData[name] = ''; 
-        } else {
-            setIsOtherCitySelected(false);
-            newData[name] = value;
-        }
-    } else if (name === 'otherKotaPembuatan') {
-        finalValue = toTitleCase(sanitizedValue); 
-        newData['kotaPembuatan'] = finalValue;
-    } else if (name === 'wilayah') {
-        if (value === dataConfig.labels.otherOption) {
-            setIsOtherWilayahSelected(true);
-            newData[name] = ''; 
-        } else {
-            setIsOtherWilayahSelected(false);
-            newData[name] = value;
-        }
-    } else if (name === 'otherWilayah') {
-        finalValue = toTitleCase(sanitizedValue); 
-        newData['wilayah'] = finalValue;
-    } else {
-        newData[name] = finalValue;
-    }
-    
-    setData(newData);
-    onDataChange(newData);
-  };
-  
-  const handleLampiranChange = (e) => {
-    const { value, checked } = e.target;
-    
-    const currentLampiranSet = new Set(data.lampiran.split('\n').map(item => item.trim()).filter(item => item !== ''));
-
-    if (checked) {
-      currentLampiranSet.add(value);
-    } else {
-      currentLampiranSet.delete(value);
-    }
-    
-    const sortedLampiranArray = dataConfig.labels.lampiranOptions.filter(option => 
-      currentLampiranSet.has(option)
-    );
-    
-    const newLampiranString = sortedLampiranArray.join('\n');
-    
-    const newData = { ...data, lampiran: newLampiranString };
-    setData(newData);
-    onDataChange(newData);
-  };
-
-  const handleBlur = (e) => {
-    const { name, value } = e.target;
-    
-    if (value && value.endsWith(' ')) {
-        const trimmedValue = value.trimEnd();
-        
-        const syntheticEvent = { target: { name, value: trimmedValue } };
-        
-        handleChange(syntheticEvent);
-    }
-  };
-
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      if (file.type !== 'image/png') {
-          alert(dataConfig.labels.ttdAlertPNG);
-          e.target.value = null;
-          return;
-      }
-      
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const newData = { 
-            ...data, 
-            tandaTangan: reader.result,
-            ttdScale: 1.0, 
-            ttdRotation: 0,
-            ttdOffsetX: 0,
-            ttdOffsetY: 0,
-        };
-        setData(newData);
-        onDataChange(newData);
-      };
-      reader.readAsDataURL(file);
-    } else {
-        const newData = { ...data, tandaTangan: null };
-        setData(newData);
-        onDataChange(newData);
-    }
-  };
-  
-  const nextStep = () => {
-    if (currentStep < 3) {
-      setCurrentStep(currentStep + 1);
-    }
-  };
-
-  const prevStep = () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
-    }
-  };
-
-  const inputClass = "w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500";
-  const labelClass = "block text-sm font-medium text-gray-700 mt-4";
-  const steps = [
-    { id: 1, title: dataConfig.form.steps.step1 },
-    { id: 2, title: dataConfig.form.steps.step2 },
-    { id: 3, title: dataConfig.form.steps.step3 },
-  ];
-
-  const renderStepContent = () => {
-    switch (currentStep) {
-      case 1:
-        return (
-          <>
-            <h3 className="text-lg font-semibold mt-4 mb-2 text-gray-800 border-b pb-1">{dataConfig.form.steps.step1}</h3>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="kotaPembuatan" className={labelClass}>{dataConfig.labels.kotaPembuatan}</label>
-                <select 
-                  id="kotaPembuatan" 
-                  name="kotaPembuatan" 
-                  value={isOtherCitySelected ? dataConfig.labels.otherOption : data.kotaPembuatan}
-                  onChange={handleChange} 
-                  className={inputClass}
-                  onBlur={handleBlur}
-                >
-                  {dataConfig.labels.kotaOptions.map(kota => (
-                    <option key={kota} value={kota}>
-                      {kota}
-                    </option>
-                  ))}
-                </select>
-                {isOtherCitySelected && (
-                  <input 
-                    type="text" 
-                    id="otherKotaPembuatan" 
-                    name="otherKotaPembuatan" 
-                    value={data.kotaPembuatan}
-                    onChange={handleChange} 
-                    className={`${inputClass} mt-2`}
-                    placeholder={dataConfig.labels.otherKotaPlaceholder}
-                    onBlur={handleBlur}
-                  />
-                )}
-              </div>
-              <div>
-                <label htmlFor="tanggalPembuatan" className={labelClass}>{dataConfig.labels.tanggalPembuatan}</label>
-                <input type="date" id="tanggalPembuatan" name="tanggalPembuatan" value={data.tanggalPembuatan} onChange={handleChange} className={inputClass} onBlur={handleBlur} />
-              </div>
-            </div>
-
-            <label htmlFor="tujuanPerusahaan" className={labelClass}>{dataConfig.labels.tujuanPerusahaan}</label>
-            <input type="text" id="tujuanPerusahaan" name="tujuanPerusahaan" value={data.tujuanPerusahaan} onChange={handleChange} className={inputClass} onBlur={handleBlur} />
-
-            <label htmlFor="tujuanAlamat" className={labelClass}>{dataConfig.labels.tujuanAlamat}</label>
-            <textarea id="tujuanAlamat" name="tujuanAlamat" value={data.tujuanAlamat} onChange={handleChange} className={`${inputClass} h-20`} onBlur={handleBlur}></textarea>
-
-            <label htmlFor="perihal" className={labelClass}>{dataConfig.labels.perihal}</label>
-            <input type="text" id="perihal" name="perihal" value={data.perihal} onChange={handleChange} className={inputClass} onBlur={handleBlur} />
-          </>
-        );
-      case 2:
-        return (
-          <>
-            <h3 className="text-lg font-semibold mt-4 mb-2 text-gray-800 border-b pb-1">{dataConfig.form.steps.step2}</h3>
-            <label htmlFor="nama" className={labelClass}>{dataConfig.labels.nama}</label>
-            <input type="text" id="nama" name="nama" value={data.nama} onChange={handleChange} className={inputClass} onBlur={handleBlur} />
-
-            <label htmlFor="alamat" className={labelClass}>{dataConfig.labels.alamat}</label>
-            <textarea id="alamat" name="alamat" value={data.alamat} onChange={handleChange} className={`${inputClass} h-16`} onBlur={handleBlur}></textarea>
-
-            <label htmlFor="email" className={labelClass}>{dataConfig.labels.email}</label>
-            <input type="email" id="email" name="email" value={data.email} onChange={handleChange} className={inputClass} onBlur={handleBlur} />
-
-            <label htmlFor="noHp" className={labelClass}>{dataConfig.labels.noHp}</label>
-            <input type="tel" id="noHp" name="noHp" value={data.noHp} onChange={handleChange} className={inputClass} onBlur={handleBlur} />
-
-            <label htmlFor="website" className={labelClass}>{dataConfig.labels.website}</label>
-            <input type="text" id="website" name="website" value={data.website} onChange={handleChange} className={inputClass} onBlur={handleBlur} />
-          </>
-        );
-      case 3:
-        const isPrintDisabled = !isFormValid(data);
-        
-        return (
-          <>
-            <h3 className="text-lg font-semibold mt-4 mb-2 text-gray-800 border-b pb-1">{dataConfig.form.steps.step3}</h3>
-            
-            <label htmlFor="posisiDilamar" className={labelClass}>{dataConfig.labels.posisiDilamar}</label>
-            <input type="text" id="posisiDilamar" name="posisiDilamar" value={data.posisiDilamar} onChange={handleChange} className={inputClass} onBlur={handleBlur} />
-
-            <label htmlFor="wilayah" className={labelClass}>{dataConfig.labels.wilayah}</label>
-            <select 
-                id="wilayah" 
-                name="wilayah" 
-                value={isOtherWilayahSelected ? dataConfig.labels.otherOption : data.wilayah}
-                onChange={handleChange} 
-                className={inputClass}
-                onBlur={handleBlur}
-            >
-                {dataConfig.labels.kotaOptions.map(wilayah => (
-                    <option key={wilayah} value={wilayah}>
-                        {wilayah}
-                    </option>
-                ))}
-            </select>
-            {isOtherWilayahSelected && (
-                <input 
-                    type="text" 
-                    id="otherWilayah" 
-                    name="otherWilayah" 
-                    value={data.wilayah}
-                    onChange={handleChange} 
-                    className={`${inputClass} mt-2`}
-                    placeholder={dataConfig.labels.otherWilayahPlaceholder}
-                    onBlur={handleBlur}
-                />
-            )}
-            
-            <label htmlFor="pendidikan" className={labelClass}>{dataConfig.labels.pendidikan}</label>
-            <input type="text" id="pendidikan" name="pendidikan" value={data.pendidikan} onChange={handleChange} className={inputClass} onBlur={handleBlur} />
-
-            <label htmlFor="jurusan" className={labelClass}>{dataConfig.labels.jurusan}</label>
-            <input type="text" id="jurusan" name="jurusan" value={data.jurusan} onChange={handleChange} className={inputClass} onBlur={handleBlur} />
-
-            <label htmlFor="pengalaman" className={labelClass}>{dataConfig.labels.pengalaman}</label>
-            <textarea id="pengalaman" name="pengalaman" value={data.pengalaman} onChange={handleChange} className={`${inputClass} h-24`} onBlur={handleBlur}></textarea>
-            
-            <label htmlFor="sumberInfo" className={labelClass}>{dataConfig.labels.sumberInfo}</label>
-            <input type="text" id="sumberInfo" name="sumberInfo" value={data.sumberInfo} onChange={handleChange} className={inputClass} onBlur={handleBlur} />
-
-            <label className={labelClass}>{dataConfig.labels.lampiran}</label>
-            <div className="mt-2 space-y-2 p-3 border border-gray-300 rounded-md bg-gray-50">
-                {dataConfig.labels.lampiranOptions.map((option, index) => (
-                    <div key={index} className="flex items-center">
-                        <input 
-                            type="checkbox" 
-                            id={`lampiran-${index}`} 
-                            name="lampiran" 
-                            value={option}
-                            checked={data.lampiran.split('\n').some(item => item.trim() === option)}
-                            onChange={handleLampiranChange} 
-                            className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                        />
-                        <label htmlFor={`lampiran-${index}`} className="ml-3 text-sm font-medium text-gray-700 cursor-pointer">
-                            {option}
-                        </label>
-                    </div>
-                ))}
-            </div>
-
-            <label htmlFor="tandaTangan" className={labelClass}>{dataConfig.labels.tandaTangan}</label>
-            <input 
-                type="file" 
-                id="tandaTangan" 
-                name="tandaTangan" 
-                accept={constants.urls.ttdFileType} 
-                onChange={handleFileChange} 
-                className={`${inputClass} file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100`}
-            />
-            {data.tandaTangan && (
-                <div className="mt-2 p-2 border rounded-md flex items-center justify-between bg-gray-50">
-                    <span className="text-sm text-gray-600">{dataConfig.labels.ttdSuccess}</span>
-                    <button 
-                        onClick={() => {
-                            const newData = { ...data, tandaTangan: null };
-                            setData(newData);
-                            onDataChange(newData);
-                        }} 
-                        className="text-red-500 hover:text-red-700 text-sm font-semibold"
-                    >
-                        {dataConfig.labels.ttdDeleteButton}
-                    </button>
-                </div>
-            )}
-
-            <button
-              onClick={() => window.print()}
-              className={`mt-6 w-full text-white py-3 rounded-md transition duration-150 print:hidden font-bold ${
-                  isPrintDisabled ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700'
-              }`}
-              disabled={isPrintDisabled}
-            >
-              {constants.icons.buttonPrintIcon} {dataConfig.form.buttonPrint}
-            </button>
-          </>
-        );
-      default:
-        return null;
-    }
-  };
-
-  const isNextDisabled = !isStepValid(currentStep, data);
+  const prefix = data.metodeLamaran === "Online Scan" ? "Scan" : "Fotocopy";
 
   return (
-    <div className="p-6 bg-white shadow-lg rounded-lg max-w-lg mx-auto sticky top-4">
-      <h2 className="text-xl font-bold mb-4 text-gray-800">{constants.icons.formTitleIcon} {dataConfig.form.title}</h2>
-      
-      <div className="flex justify-between items-center mb-6">
-        {steps.map((step) => (
-          <div key={step.id} className="flex flex-col items-center">
-            <div 
-              className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-white transition-colors duration-200 ${
-                currentStep === step.id 
-                  ? 'bg-blue-600' 
-                  : currentStep > step.id 
-                    ? 'bg-green-500' 
-                    : 'bg-gray-400'
-              }`}
-            >
-              {step.id}
+    <div className="flex flex-col bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+      <div className="bg-gray-50 border-b border-gray-200 p-4">
+        <div className="flex items-center justify-between mb-2">
+            <h2 className="text-lg font-bold text-gray-800">{steps[activeStep]}</h2>
+            <span className="text-xs font-semibold text-gray-500 bg-gray-200 px-2 py-1 rounded-full">{activeStep + 1} / {steps.length}</span>
+        </div>
+        <div className="w-full bg-gray-200 rounded-full h-1.5">
+            <div className="bg-blue-600 h-1.5 rounded-full transition-all duration-300" style={{ width: `${((activeStep + 1) / steps.length) * 100}%` }}></div>
+        </div>
+      </div>
+      <div className="p-6 flex flex-col gap-6 min-h-[420px]">
+        {activeStep === 0 && (
+          <div className="flex flex-col gap-4 animate-fadeIn">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <InputField label={dataConfig.labels.kotaPembuatan} name="kotaPembuatan" value={data.kotaPembuatan} onChange={handleChange} onBlur={handleBlur} required={true} />
+              <InputField label={dataConfig.labels.tanggalPembuatan} name="tanggalPembuatan" value={data.tanggalPembuatan} onChange={handleChange} type="date" required={true} />
             </div>
-            <p className={`text-xs mt-1 transition-colors duration-200 ${currentStep === step.id ? 'text-blue-600 font-semibold' : 'text-gray-600'}`}>{step.title}</p>
+            {!showOtherJabatan ? (
+              <SelectField label={dataConfig.labels.tujuanJabatan} name="tujuanJabatan" value={data.tujuanJabatan} onChange={(e) => { if(e.target.value === dataConfig.labels.otherOption) { setShowOtherJabatan(true); handleChange({target:{name:'tujuanJabatan', value:''}}); } else { handleChange(e); } }} options={dataConfig.options.tujuanJabatan} required={true} />
+            ) : (
+              <InputField label={dataConfig.labels.tujuanJabatan} name="tujuanJabatan" value={data.tujuanJabatan} onChange={handleChange} onBlur={handleBlur} placeholder={dataConfig.labels.placeholderJabatan} required={true} />
+            )}
+            <InputField label={dataConfig.labels.tujuanPerusahaan} name="tujuanPerusahaan" value={data.tujuanPerusahaan} onChange={handleChange} onBlur={handleBlur} required={true} />
+            <TextAreaField label={dataConfig.labels.tujuanAlamat} name="tujuanAlamat" value={data.tujuanAlamat} onChange={handleChange} onBlur={handleBlur} rows={2} required={true} />
+            <InputField label={dataConfig.labels.perihal} name="perihal" value={data.perihal} onChange={handleChange} onBlur={handleBlur} required={true} />
           </div>
-        ))}
-      </div>
-
-      <div className="mb-4">
-        {renderStepContent()}
-      </div>
-
-      <div className="flex justify-between mt-4">
-        {currentStep > 1 && (
-          <button
-            onClick={prevStep}
-            className="bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600 transition duration-150 font-semibold"
-          >
-            {constants.icons.buttonPrevIcon} {dataConfig.form.buttonPrev}
-          </button>
         )}
-        {currentStep < 3 && (
-          <button
-            onClick={nextStep}
-            className={`py-2 px-4 rounded-md transition duration-150 font-semibold ${
-              isNextDisabled
-                ? 'bg-blue-300 text-white cursor-not-allowed'
-                : 'bg-blue-600 text-white hover:bg-blue-700'
-            } ${currentStep > 1 ? 'ml-auto' : 'ml-auto'}`}
-            disabled={isNextDisabled}
-          >
-            {dataConfig.form.buttonNext} {constants.icons.buttonNextIcon}
-          </button>
+        {activeStep === 1 && (
+          <div className="flex flex-col gap-4 animate-fadeIn">
+            <InputField label={dataConfig.labels.nama} name="nama" value={data.nama} onChange={handleChange} onBlur={handleBlur} required={true} />
+            <TextAreaField label={dataConfig.labels.alamat} name="alamat" value={data.alamat} onChange={handleChange} onBlur={handleBlur} rows={2} required={true} />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <InputField label={dataConfig.labels.email} name="email" value={data.email} onChange={handleChange} onBlur={handleBlur} type="email" required={true} error={data.email && !validateEmail(data.email) ? dataConfig.messages.emailError : ""} />
+              <InputField label={dataConfig.labels.noHp} name="noHp" value={data.noHp} onChange={handleChange} onBlur={handleBlur} type="tel" required={true} error={data.noHp && !validateNoHp(data.noHp) ? dataConfig.messages.noHpError : ""} />
+            </div>
+            <InputField label={dataConfig.labels.website} name="website" value={data.website} onChange={handleChange} onBlur={handleBlur} error={data.website && !validateWebsite(data.website) ? dataConfig.messages.websiteError : ""} />
+          </div>
+        )}
+        {activeStep === 2 && (
+          <div className="flex flex-col gap-4 animate-fadeIn">
+            <InputField label={dataConfig.labels.posisiDilamar} name="posisiDilamar" value={data.posisiDilamar} onChange={handleChange} onBlur={handleBlur} required={true} />
+            <SelectField label={dataConfig.labels.sumberInfo} name="sumberInfo" value={data.sumberInfo} onChange={handleChange} options={dataConfig.options.sumberInfo} required={true} />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <SelectField label={dataConfig.labels.pendidikan} name="pendidikan" value={data.pendidikan} onChange={handleChange} options={dataConfig.options.pendidikan} required={true} />
+              <InputField label={dataConfig.labels.jurusan} name="jurusan" value={data.jurusan} onChange={handleChange} onBlur={handleBlur} required={true} />
+            </div>
+            <TextAreaField label={dataConfig.labels.pengalaman} name="pengalaman" value={data.pengalaman} onChange={handleChange} onBlur={handleBlur} rows={3} required={true} />
+          </div>
+        )}
+        {activeStep === 3 && (
+          <div className="flex flex-col gap-4 animate-fadeIn">
+            <SelectField label={dataConfig.labels.metodeLamaran} name="metodeLamaran" value={data.metodeLamaran} onChange={handleMetodeChange} options={dataConfig.options.metodeLamaran} required={true} />
+            <CheckboxGroup label={dataConfig.labels.lampiran} selectedOptions={data.lampiran} options={dataConfig.options.lampiranBaseOptions} prefix={prefix} onChange={handleChange} />
+            <div className="flex flex-col gap-1 mt-2">
+              <label className="text-sm font-semibold text-gray-700">{dataConfig.labels.uploadTtd}</label>
+              <input type="file" accept="image/png, image/jpeg" onChange={handleFileChange} className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer" />
+              <p className="text-xs text-gray-500 mt-1">{dataConfig.labels.ttdNote}</p>
+            </div>
+          </div>
         )}
       </div>
-      
+      <div className="bg-gray-50 p-4 border-t border-gray-200 flex justify-between items-center">
+        <button onClick={handlePrev} disabled={activeStep === 0} className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition ${activeStep === 0 ? 'text-gray-400 cursor-not-allowed' : 'text-gray-700 bg-white border border-gray-300 hover:bg-gray-100 shadow-sm'}`}>
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={constants.icons.prev}></path></svg>
+          {dataConfig.navigation.prev}
+        </button>
+        {activeStep === steps.length - 1 ? (
+            <button onClick={handlePrint} disabled={!validateStep(activeStep)} className={`flex items-center gap-2 px-6 py-2 rounded-lg text-sm font-bold shadow-md transition ${validateStep(activeStep) ? 'bg-green-600 hover:bg-green-700 text-white' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}>
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={constants.icons.print}></path></svg>
+              {dataConfig.navigation.finish}
+            </button>
+        ) : (
+            <button onClick={handleNext} disabled={!validateStep(activeStep)} className={`flex items-center gap-2 px-6 py-2 rounded-lg text-sm font-bold shadow-md transition ${validateStep(activeStep) ? 'bg-blue-600 hover:bg-blue-700 text-white' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}>
+              {dataConfig.navigation.next}
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={constants.icons.next}></path></svg>
+            </button>
+        )}
+      </div>
     </div>
   );
 };
