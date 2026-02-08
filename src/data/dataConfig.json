@@ -22,21 +22,24 @@
     "uploadTtd": "Unggah Tanda tangan (PNG/JPG)",
     "ttdNote": "Gunakan gambar transparan untuk hasil terbaik.",
     "requiredMark": "*",
-    "otherOption": "Lainnya (Ketik Manual)",
+    "otherOption": "Lainnya",
     "placeholderJabatan": "Ketik jabatan tujuan...",
     "select": "Pilih"
   },
   "options": {
-    "tujuanJabatan": ["HRD Manager", "Pimpinan Cabang", "Kepala Personalia", "Lainnya (Ketik Manual)"],
-    "sumberInfo": ["LinkedIn", "Instagram", "Website Perusahaan", "Portal Kerja", "Teman/Keluarga"],
-    "pendidikan": ["SMA/SMK", "D3", "S1", "S2"],
+    "tujuanJabatan": ["HRD Manager", "Pimpinan Cabang", "Kepala Personalia", "Lainnya"],
+    "sumberInfo": ["Medsos", "Website", "Job Portal", "Job Fair", "Teman", "Keluarga"],
+    "pendidikan": ["SMA/SMK", "D3", "S1", "S2", "S3", "Paket C"],
     "metodeLamaran": ["Online Scan", "Offline Fotocopy"],
     "lampiranBaseOptions": [
-      "Daftar Riwayat Hidup (CV)",
-      "Ijazah Terakhir",
-      "Transkrip Nilai",
+      "Curriculum Vitae",
       "KTP",
+      "KK",
+      "SKCK",
+      "SIM C",
+      "SIM A",
       "Pas Foto Terbaru",
+      "Surat Pengalaman Kerja (Paklaring)",
       "Sertifikat Pendukung"
     ]
   },
