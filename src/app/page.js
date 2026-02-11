@@ -5,51 +5,64 @@ import SuratLamaranForm from '../components/SuratLamaranForm';
 import SuratLamaranPreview from '../components/SuratLamaranPreview';
 import initialData from '../data/initialData';
 
+const normalizedFields = new Set(['email', 'website']);
+
 export default function Home() {
   const [data, setData] = useState(initialData);
+  const updateDataField = (name, value) => {
+    setData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const normalizeValue = (name, value, trim = false) => {
+    if (typeof value !== 'string') return value;
+
+    let result = value;
+
+    if (normalizedFields.has(name)) {
+      result = result.replace(/\s+/g, '').toLowerCase();
+    } else {
+      result = result.replace(/\b\w/g, (l) => l.toUpperCase());
+    }
+
+    return trim ? result.trim() : result;
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     
     if (Array.isArray(value)) {
-      setData((prevData) => ({
-        ...prevData,
-        [name]: value,
-      }));
+      updateDataField(name, value);
     } else {
-      const formattedValue = typeof value === 'string' 
-        ? value.replace(/\b\w/g, (l) => l.toUpperCase()) 
-        : value;
-        
-      setData((prevData) => ({
-        ...prevData,
-        [name]: formattedValue,
-      }));
+      updateDataField(name, normalizeValue(name, value));
     }
   };
 
   const handleBlur = (e) => {
     const { name, value } = e.target;
     if (typeof value === 'string') {
-      setData((prevData) => ({
-        ...prevData,
-        [name]: value.trim(),
-      }));
+      updateDataField(name, normalizeValue(name, value, true));
     }
   };
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setData((prevData) => ({
-          ...prevData,
-          ttd: reader.result,
-        }));
-      };
-      reader.readAsDataURL(file);
+    if (!file) return;
+    if (file.type !== 'image/png') {
+      e.target.value = '';
+      return;
     }
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setData((prevData) => ({
+        ...prevData,
+        ttd: reader.result,
+      }));
+    };
+    reader.readAsDataURL(file);
   };
 
   return (

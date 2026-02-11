@@ -1,4 +1,9 @@
 {
+  "defaults": {
+    "perihal": "Lamaran Pekerjaan",
+    "metodeLamaran": "Online Scan",
+    "fontFamily": "Calibri"
+  },
   "steps": ["Informasi Dasar", "Data Pribadi", "Detail Lamaran", "Lampiran & TTD"],
   "labels": {
     "kotaPembuatan": "Kota Pembuatan",
@@ -7,11 +12,12 @@
     "tujuanPerusahaan": "Nama Perusahaan",
     "tujuanAlamat": "Alamat Perusahaan",
     "perihal": "Perihal",
+    "fontFamily": "Font Surat",
     "nama": "Nama Lengkap",
     "alamat": "Alamat Lengkap",
     "email": "Email",
     "noHp": "No. HP / WA",
-    "website": "Portofolio / Website (Opsional)",
+    "website": "Portofolio / Website",
     "posisiDilamar": "Posisi yang Dilamar",
     "sumberInfo": "Sumber Informasi",
     "pendidikan": "Pendidikan Terakhir",
@@ -19,18 +25,35 @@
     "pengalaman": "Ringkasan Pengalaman",
     "metodeLamaran": "Metode Lamaran",
     "lampiran": "Dokumen Lampiran",
-    "uploadTtd": "Unggah Tanda tangan (PNG/JPG)",
+    "uploadTtd": "Unggah Tanda tangan (PNG)",
     "ttdNote": "Gunakan gambar transparan untuk hasil terbaik.",
+    "ttdAdjustHint": "Tanda tangan bisa digeser langsung dari preview, atau atur lewat slider berikut:",
+    "ttdReset": "Reset Posisi TTD",
+    "ttdX": "Posisi Horizontal",
+    "ttdY": "Posisi Vertikal",
+    "ttdScale": "Ukuran",
+    "ttdRotation": "Rotasi",
     "requiredMark": "*",
     "otherOption": "Lainnya",
     "placeholderJabatan": "Ketik jabatan tujuan...",
     "select": "Pilih"
   },
   "options": {
-    "tujuanJabatan": ["HRD Manager", "Pimpinan Cabang", "Kepala Personalia", "Lainnya"],
+    "tujuanJabatan": ["HRD", "Pimpinan", "Personalia", "Lainnya"],
     "sumberInfo": ["Medsos", "Website", "Job Portal", "Job Fair", "Teman", "Keluarga"],
-    "pendidikan": ["SMA/SMK", "D3", "S1", "S2", "S3", "Paket C"],
+    "pendidikan": ["SMA", "SMK", "D3", "S1", "S2", "S3", "Paket C"],
     "metodeLamaran": ["Online Scan", "Offline Fotocopy"],
+    "fontFamily": [
+      "Calibri",
+      "Arial",
+      "Times New Roman",
+      "Cambria",
+      "Georgia",
+      "Verdana",
+      "Tahoma",
+      "Trebuchet MS",
+      "Garamond"
+    ],
     "lampiranBaseOptions": [
       "Curriculum Vitae",
       "KTP",
@@ -41,13 +64,69 @@
       "Pas Foto Terbaru",
       "Surat Pengalaman Kerja (Paklaring)",
       "Sertifikat Pendukung"
-    ]
+    ],
+    "lampiranWithoutPrefix": ["Curriculum Vitae", "Pas Foto Terbaru"]
   },
   "messages": {
     "emailError": "Format email tidak valid",
     "noHpError": "Format No HP tidak valid (08xxx)",
     "websiteError": "Format URL tidak valid"
   },
+  "validationPatterns": {
+    "email": "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$",
+    "noHp": "^08[0-9]{8,11}$",
+    "website": "^(https?:\\/\\/)?([\\w\\d-]+\\.)+[\\w\\d]{2,}(\\/.*)?$"
+  },
+  "metodePrefixes": {
+    "Online Scan": "Scan",
+    "Offline Fotocopy": "Fotocopy"
+  },
+  "preview": {
+    "dateLocale": "id-ID",
+    "baseFontSizePx": 16,
+    "fontScale": {
+      "Calibri": 1.06,
+      "Arial": 1,
+      "Times New Roman": 0.98,
+      "Cambria": 0.99,
+      "Georgia": 0.97,
+      "Verdana": 0.93,
+      "Tahoma": 0.96,
+      "Trebuchet MS": 0.95,
+      "Garamond": 1.05
+    },
+    "fallbacks": {
+      "kota": "Kota",
+      "tanggal": "Tanggal",
+      "perihal": "Lamaran Pekerjaan",
+      "tujuanJabatan": "HRD Manager",
+      "tujuanPerusahaan": "Nama Perusahaan",
+      "tujuanAlamat": "Alamat Perusahaan",
+      "value": "...",
+      "namaLengkap": "Nama Lengkap"
+    },
+    "labels": {
+      "hal": "Hal:",
+      "yth": "Yth.",
+      "nama": "Nama",
+      "pendidikan": "Pendidikan",
+      "alamat": "Alamat",
+      "noHp": "No. HP / WA",
+      "email": "Email",
+      "portofolio": "Portofolio"
+    },
+    "messages": {
+      "lampiranKosong": "Belum ada lampiran dipilih",
+      "hormatSaya": "Hormat Saya,",
+      "ttdAlt": "Tanda Tangan"
+    }
+  },
+  "signatureControls": [
+    { "labelKey": "ttdX", "name": "ttdX", "min": -120, "max": 120, "step": 1, "unit": " px" },
+    { "labelKey": "ttdY", "name": "ttdY", "min": -80, "max": 80, "step": 1, "unit": " px" },
+    { "labelKey": "ttdScale", "name": "ttdScale", "min": 0.5, "max": 2, "step": 0.01, "unit": "x" },
+    { "labelKey": "ttdRotation", "name": "ttdRotation", "min": -180, "max": 180, "step": 1, "unit": " deg" }
+  ],
   "navigation": {
     "prev": "Sebelumnya",
     "next": "Selanjutnya",
