@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
 import SuratLamaranForm from '../components/SuratLamaranForm';
 import SuratLamaranPreview from '../components/SuratLamaranPreview';
 import initialData from '../data/initialData';
@@ -67,24 +66,7 @@ export default function Home() {
   };
 
   return (
-    <>
-      {/* Navigation Header */}
-      <header className="bg-blue-600 text-white shadow-lg">
-        <div className="max-w-6xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <h1 className="text-xl font-bold">Aplikasi Surat Lamaran</h1>
-            <nav className="flex gap-4">
-              <Link href="/produk" className="px-4 py-2 bg-white text-blue-600 rounded-lg font-medium hover:bg-blue-50 transition-colors">
-                Produk
-              </Link>
-              <Link href="/pos" className="px-4 py-2 bg-white text-blue-600 rounded-lg font-medium hover:bg-blue-50 transition-colors">
-                POS
-              </Link>
-            </nav>
-          </div>
-        </div>
-      </header>
-      <main className="min-h-screen bg-gray-100 py-8 px-4 print:p-0 print:bg-white">
+    <main className="min-h-screen bg-gray-100 py-8 px-4 print:p-0 print:bg-white">
       <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 print:block">
         <div className="print:hidden">
           <SuratLamaranForm
@@ -99,6 +81,5 @@ export default function Home() {
         </div>
       </div>
     </main>
-    </>
   );
 }
