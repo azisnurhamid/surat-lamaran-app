@@ -106,7 +106,7 @@ const SuratLamaranPreview = ({ data }) => {
         <div className="text-center min-w-[200px]">
           <p className="mb-2">{messages.hormatSaya}</p>
           <div className="h-16 flex items-center justify-center mb-1">
-            {data.ttd ? (
+            {data.ttd && (
               <div style={signatureStyle}>
                 <Image
                   src={data.ttd}
@@ -117,8 +117,6 @@ const SuratLamaranPreview = ({ data }) => {
                   className="max-h-full max-w-[150px] object-contain"
                 />
               </div>
-            ) : (
-              <div className="w-32 border-b border-gray-300 h-16"></div>
             )}
           </div>
           <p className="font-bold underline">{data.nama || fallback.namaLengkap}</p>
