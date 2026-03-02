@@ -11,7 +11,7 @@ const normalizedFields = new Set(['email', 'website']);
 const loadFromStorage = () => {
   if (typeof window === 'undefined') return initialData;
   try {
-    const stored = localStorage.getItem(STORAGE_KEY);
+    const stored = sessionStorage.getItem(STORAGE_KEY);
     if (stored) {
       const parsed = JSON.parse(stored);
       // Merge with initialData to ensure all fields exist
@@ -36,9 +36,9 @@ export default function Home() {
   useEffect(() => {
     if (isLoaded) {
       try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        sessionStorage.setItem(STORAGE_KEY, JSON.stringify(data));
       } catch (e) {
-        console.error('Failed to save to localStorage:', e);
+        console.error('Failed to save to sessionStorage:', e);
       }
     }
   }, [data, isLoaded]);
