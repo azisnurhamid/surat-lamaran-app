@@ -14,7 +14,6 @@ const loadFromStorage = () => {
     const stored = sessionStorage.getItem(STORAGE_KEY);
     if (stored) {
       const parsed = JSON.parse(stored);
-      // Merge with initialData to ensure all fields exist
       return { ...initialData, ...parsed };
     }
   } catch (e) {
