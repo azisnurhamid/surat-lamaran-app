@@ -1,14 +1,47 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import SuratLamaranForm from '../components/SuratLamaranForm';
 import SuratLamaranPreview from '../components/SuratLamaranPreview';
 import initialData from '../data/initialData';
 
+const STORAGE_KEY = 'suratLamaranData';
 const normalizedFields = new Set(['email', 'website']);
+
+const loadFromStorage = () => {
+  if (typeof window === 'undefined') return initialData;
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      // Merge with initialData to ensure all fields exist
+      return { ...initialData, ...parsed };
+    }
+  } catch (e) {
+    console.error('Failed to load from localStorage:', e);
+  }
+  return initialData;
+};
 
 export default function Home() {
   const [data, setData] = useState(initialData);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    const storedData = loadFromStorage();
+    setData(storedData);
+    setIsLoaded(true);
+  }, []);
+
+  useEffect(() => {
+    if (isLoaded) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      } catch (e) {
+        console.error('Failed to save to localStorage:', e);
+      }
+    }
+  }, [data, isLoaded]);
   const updateDataField = (name, value) => {
     setData((prevData) => ({
       ...prevData,
