@@ -46,12 +46,9 @@ const SuratLamaranPreview = ({ data }) => {
   return (
     <div className="p-8 md:p-12 text-gray-900 bg-white min-h-[1123px] leading-relaxed text-justify" style={{ fontFamily, fontSize }}>
       <div className="mb-8">
-        <p className="text-right mb-6">
-          {data.kotaPembuatan || fallback.kota}, {formatTanggal(data.tanggalPembuatan) || fallback.tanggal}
-        </p>
-        
-        <div className="mb-6">
-          <p>{labels.hal} <span className="underline">{data.perihal || fallback.perihal}</span></p>
+        <div className="mb-6 flex justify-between items-center">
+          <span>{labels.hal} <span className="underline">{data.perihal || fallback.perihal}</span></span>
+          <span>{data.kotaPembuatan || fallback.kota}, {formatTanggal(data.tanggalPembuatan) || fallback.tanggal}</span>
         </div>
 
         <div className="mb-8">
